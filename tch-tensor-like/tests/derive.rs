@@ -100,25 +100,28 @@ fn collections_test() {
 
 #[test]
 #[cfg(feature = "derive")]
-fn derive_test() {
+fn derive_types_test() {
     let maybe_cuda = Device::cuda_if_available();
 
     // unit struct
-    #[derive(TensorLike)]
-    struct Unit;
-
     {
+        #[derive(Debug, TensorLike, PartialEq, Eq)]
+        struct Unit;
+
         let unit = Unit;
-        unit.to_device(maybe_cuda)
-            .to_kind(Kind::Double)
-            .shallow_clone();
+        assert_eq!(
+            unit.to_device(maybe_cuda)
+                .to_kind(Kind::Double)
+                .shallow_clone(),
+            Unit
+        );
     }
 
     // empty tuple struct
-    #[derive(TensorLike)]
-    struct EmptyTuple();
-
     {
+        #[derive(TensorLike)]
+        struct EmptyTuple();
+
         let tup = EmptyTuple();
         tup.to_device(maybe_cuda)
             .to_kind(Kind::Double)
@@ -126,10 +129,10 @@ fn derive_test() {
     }
 
     // tuple struct
-    #[derive(TensorLike)]
-    struct Tuple(u8, i16, f32, Tensor, Vec<Tensor>);
-
     {
+        #[derive(TensorLike)]
+        struct Tuple(u8, i16, f32, Tensor, Vec<Tensor>);
+
         let from = Tuple(
             0,
             -1,
@@ -142,6 +145,9 @@ fn derive_test() {
             .to_kind(Kind::Double)
             .shallow_clone();
 
+        assert_eq!(to.0, 0);
+        assert_eq!(to.1, -1);
+        assert_eq!(to.2, 3.14);
         assert_eq!(to.3.device(), maybe_cuda);
         assert_eq!(to.3.kind().unwrap(), Kind::Double);
 
@@ -152,10 +158,10 @@ fn derive_test() {
     }
 
     // empty struct
-    #[derive(TensorLike)]
-    struct EmptyNamed {}
-
     {
+        #[derive(TensorLike)]
+        struct EmptyNamed {}
+
         let named = EmptyNamed {};
         named
             .to_device(maybe_cuda)
@@ -164,16 +170,16 @@ fn derive_test() {
     }
 
     // named struct
-    #[derive(TensorLike)]
-    struct Named {
-        a: u8,
-        b: i16,
-        c: f32,
-        d: Tensor,
-        e: Vec<Tensor>,
-    }
-
     {
+        #[derive(TensorLike)]
+        struct Named {
+            a: u8,
+            b: i16,
+            c: f32,
+            d: Tensor,
+            e: Vec<Tensor>,
+        }
+
         let from = Named {
             a: 0,
             b: -1,
@@ -186,6 +192,9 @@ fn derive_test() {
             .to_kind(Kind::Double)
             .shallow_clone();
 
+        assert_eq!(to.a, 0);
+        assert_eq!(to.b, -1);
+        assert_eq!(to.c, 3.14);
         assert_eq!(to.d.device(), maybe_cuda);
         assert_eq!(to.d.kind().unwrap(), Kind::Double);
 
@@ -193,5 +202,152 @@ fn derive_test() {
             assert_eq!(tensor.device(), maybe_cuda);
             assert_eq!(tensor.kind().unwrap(), Kind::Double);
         });
+    }
+
+    // enum
+    {
+        #[derive(TensorLike)]
+        enum Enum {
+            Unit,
+            Tuple(u8, i16, f32, Tensor, Vec<Tensor>),
+            Named {
+                a: u8,
+                b: i16,
+                c: f32,
+                d: Tensor,
+                e: Vec<Tensor>,
+            },
+        }
+
+        // unit variant
+        {
+            let unit = Enum::Unit;
+            match unit
+                .to_device(maybe_cuda)
+                .to_kind(Kind::Double)
+                .shallow_clone()
+            {
+                Enum::Unit => (),
+                _ => unreachable!(),
+            }
+        }
+
+        // tuple variant
+        {
+            let from = Enum::Tuple(
+                0,
+                -1,
+                3.14,
+                Tensor::randn(&[], FLOAT_CPU),
+                vec![Tensor::randn(&[], FLOAT_CPU), Tensor::randn(&[], FLOAT_CPU)],
+            );
+            let to = from
+                .to_device(maybe_cuda)
+                .to_kind(Kind::Double)
+                .shallow_clone();
+
+            match to {
+                Enum::Tuple(a, b, c, tensor, vec) => {
+                    assert_eq!(a, 0);
+                    assert_eq!(b, -1);
+                    assert_eq!(c, 3.14);
+
+                    assert_eq!(tensor.device(), maybe_cuda);
+                    assert_eq!(tensor.kind().unwrap(), Kind::Double);
+
+                    vec.iter().for_each(|tensor| {
+                        assert_eq!(tensor.device(), maybe_cuda);
+                        assert_eq!(tensor.kind().unwrap(), Kind::Double);
+                    });
+                }
+                _ => unreachable!(),
+            }
+        }
+
+        // named variant
+        {
+            let from = Enum::Named {
+                a: 0,
+                b: -1,
+                c: 3.14,
+                d: Tensor::randn(&[], FLOAT_CPU),
+                e: vec![Tensor::randn(&[], FLOAT_CPU), Tensor::randn(&[], FLOAT_CPU)],
+            };
+            let to = from
+                .to_device(maybe_cuda)
+                .to_kind(Kind::Double)
+                .shallow_clone();
+
+            match to {
+                Enum::Named { a, b, c, d, e } => {
+                    assert_eq!(a, 0);
+                    assert_eq!(b, -1);
+                    assert_eq!(c, 3.14);
+
+                    assert_eq!(d.device(), maybe_cuda);
+                    assert_eq!(d.kind().unwrap(), Kind::Double);
+
+                    e.iter().for_each(|tensor| {
+                        assert_eq!(tensor.device(), maybe_cuda);
+                        assert_eq!(tensor.kind().unwrap(), Kind::Double);
+                    });
+                }
+                _ => unreachable!(),
+            }
+        }
+    }
+}
+
+#[test]
+#[cfg(feature = "derive")]
+fn derive_clone_test() {
+    let maybe_cuda = Device::cuda_if_available();
+
+    // tuple struct
+    {
+        #[derive(TensorLike)]
+        struct Tuple(
+            Tensor,
+            #[tensor_like(copy)] &'static str,
+            #[tensor_like(clone)] String,
+        );
+
+        let from = Tuple(Tensor::randn(&[], FLOAT_CPU), "mighty", "tch".into());
+        let to = from
+            .to_device(maybe_cuda)
+            .to_kind(Kind::Double)
+            .shallow_clone();
+
+        assert_eq!(to.0.device(), maybe_cuda);
+        assert_eq!(to.0.kind().unwrap(), Kind::Double);
+        assert_eq!(to.1, "mighty");
+        assert_eq!(to.2, "tch".to_string());
+    }
+
+    // named struct
+    {
+        #[derive(TensorLike)]
+        struct Named {
+            a: Tensor,
+            #[tensor_like(copy)]
+            b: &'static str,
+            #[tensor_like(clone)]
+            c: String,
+        }
+
+        let from = Named {
+            a: Tensor::randn(&[], FLOAT_CPU),
+            b: "mighty",
+            c: "tch".into(),
+        };
+        let to = from
+            .to_device(maybe_cuda)
+            .to_kind(Kind::Double)
+            .shallow_clone();
+
+        assert_eq!(to.a.device(), maybe_cuda);
+        assert_eq!(to.a.kind().unwrap(), Kind::Double);
+        assert_eq!(to.b, "mighty");
+        assert_eq!(to.c, "tch".to_string());
     }
 }
