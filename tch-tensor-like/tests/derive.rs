@@ -28,6 +28,47 @@ fn shallow_clone_test() {
 }
 
 #[test]
+fn tensor_test() {
+    let maybe_cuda = Device::cuda_if_available();
+
+    let tensor = Tensor::randn(&[], FLOAT_CPU)
+        .to_device(maybe_cuda)
+        .to_kind(Kind::Double)
+        .shallow_clone();
+
+    assert_eq!(tensor.device(), maybe_cuda);
+    assert_eq!(tensor.kind().unwrap(), Kind::Double);
+}
+
+#[test]
+fn option_test() {
+    let maybe_cuda = Device::cuda_if_available();
+
+    {
+        let some = Some(Tensor::randn(&[], FLOAT_CPU))
+            .to_device(maybe_cuda)
+            .to_kind(Kind::Double)
+            .shallow_clone();
+
+        let tensor = some.unwrap();
+        assert_eq!(tensor.device(), maybe_cuda);
+        assert_eq!(tensor.kind().unwrap(), Kind::Double);
+    }
+
+    {
+        let none = Option::<Tensor>::None
+            .to_device(maybe_cuda)
+            .to_kind(Kind::Double)
+            .shallow_clone();
+
+        match none {
+            Some(_) => unreachable!(),
+            None => (),
+        }
+    }
+}
+
+#[test]
 fn collections_test() {
     let maybe_cuda = Device::cuda_if_available();
 

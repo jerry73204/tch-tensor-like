@@ -368,3 +368,26 @@ where
             .collect()
     }
 }
+
+// option
+
+impl<T> TensorLike for Option<T>
+where
+    T: TensorLike,
+{
+    fn f_to_device(&self, device: Device) -> Result<Self, TchError> {
+        self.as_ref()
+            .map(|tensor| tensor.f_to_device(device))
+            .transpose()
+    }
+
+    fn f_to_kind(&self, kind: Kind) -> Result<Self, TchError> {
+        self.as_ref()
+            .map(|tensor| tensor.f_to_kind(kind))
+            .transpose()
+    }
+
+    fn shallow_clone(&self) -> Self {
+        self.as_ref().map(|tensor| tensor.shallow_clone())
+    }
+}
