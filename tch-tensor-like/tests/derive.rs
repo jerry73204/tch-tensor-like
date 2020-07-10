@@ -18,10 +18,10 @@ fn shallow_clone_test() {
 
     from.into_iter().zip(to.into_iter()).for_each(|(lhs, rhs)| {
         assert_eq!(lhs.device(), Device::Cpu);
-        assert_eq!(lhs.kind().unwrap(), Kind::Float);
+        assert_eq!(lhs.kind(), Kind::Float);
 
         assert_eq!(rhs.device(), maybe_cuda);
-        assert_eq!(rhs.kind().unwrap(), Kind::Double);
+        assert_eq!(rhs.kind(), Kind::Double);
 
         assert_abs_diff_eq!(f64::from(lhs), f64::from(rhs));
     });
@@ -37,7 +37,7 @@ fn tensor_test() {
         .shallow_clone();
 
     assert_eq!(tensor.device(), maybe_cuda);
-    assert_eq!(tensor.kind().unwrap(), Kind::Double);
+    assert_eq!(tensor.kind(), Kind::Double);
 }
 
 #[test]
@@ -52,7 +52,7 @@ fn option_test() {
 
         let tensor = some.unwrap();
         assert_eq!(tensor.device(), maybe_cuda);
-        assert_eq!(tensor.kind().unwrap(), Kind::Double);
+        assert_eq!(tensor.kind(), Kind::Double);
     }
 
     {
@@ -83,7 +83,7 @@ fn collections_test() {
         .into_iter()
         .for_each(|tensor| {
             assert_eq!(tensor.device(), maybe_cuda);
-            assert_eq!(tensor.kind().unwrap(), Kind::Double);
+            assert_eq!(tensor.kind(), Kind::Double);
         });
 
     // linked list
@@ -95,7 +95,7 @@ fn collections_test() {
         .into_iter()
         .for_each(|tensor| {
             assert_eq!(tensor.device(), maybe_cuda);
-            assert_eq!(tensor.kind().unwrap(), Kind::Double);
+            assert_eq!(tensor.kind(), Kind::Double);
         });
 
     // vec deque
@@ -107,7 +107,7 @@ fn collections_test() {
         .into_iter()
         .for_each(|tensor| {
             assert_eq!(tensor.device(), maybe_cuda);
-            assert_eq!(tensor.kind().unwrap(), Kind::Double);
+            assert_eq!(tensor.kind(), Kind::Double);
         });
 
     let pair_iter = (0..16).map(|index| (index, Tensor::randn(&[], FLOAT_CPU)));
@@ -122,7 +122,7 @@ fn collections_test() {
         .into_iter()
         .for_each(|(_, tensor)| {
             assert_eq!(tensor.device(), maybe_cuda);
-            assert_eq!(tensor.kind().unwrap(), Kind::Double);
+            assert_eq!(tensor.kind(), Kind::Double);
         });
 
     // btree map
@@ -135,7 +135,7 @@ fn collections_test() {
         .into_iter()
         .for_each(|(_, tensor)| {
             assert_eq!(tensor.device(), maybe_cuda);
-            assert_eq!(tensor.kind().unwrap(), Kind::Double);
+            assert_eq!(tensor.kind(), Kind::Double);
         });
 }
 
@@ -190,11 +190,11 @@ fn derive_types_test() {
         assert_eq!(to.1, -1);
         assert_eq!(to.2, 3.14);
         assert_eq!(to.3.device(), maybe_cuda);
-        assert_eq!(to.3.kind().unwrap(), Kind::Double);
+        assert_eq!(to.3.kind(), Kind::Double);
 
         to.4.iter().for_each(|tensor| {
             assert_eq!(tensor.device(), maybe_cuda);
-            assert_eq!(tensor.kind().unwrap(), Kind::Double);
+            assert_eq!(tensor.kind(), Kind::Double);
         });
     }
 
@@ -237,11 +237,11 @@ fn derive_types_test() {
         assert_eq!(to.b, -1);
         assert_eq!(to.c, 3.14);
         assert_eq!(to.d.device(), maybe_cuda);
-        assert_eq!(to.d.kind().unwrap(), Kind::Double);
+        assert_eq!(to.d.kind(), Kind::Double);
 
         to.e.iter().for_each(|tensor| {
             assert_eq!(tensor.device(), maybe_cuda);
-            assert_eq!(tensor.kind().unwrap(), Kind::Double);
+            assert_eq!(tensor.kind(), Kind::Double);
         });
     }
 
@@ -294,11 +294,11 @@ fn derive_types_test() {
                     assert_eq!(c, 3.14);
 
                     assert_eq!(tensor.device(), maybe_cuda);
-                    assert_eq!(tensor.kind().unwrap(), Kind::Double);
+                    assert_eq!(tensor.kind(), Kind::Double);
 
                     vec.iter().for_each(|tensor| {
                         assert_eq!(tensor.device(), maybe_cuda);
-                        assert_eq!(tensor.kind().unwrap(), Kind::Double);
+                        assert_eq!(tensor.kind(), Kind::Double);
                     });
                 }
                 _ => unreachable!(),
@@ -326,11 +326,11 @@ fn derive_types_test() {
                     assert_eq!(c, 3.14);
 
                     assert_eq!(d.device(), maybe_cuda);
-                    assert_eq!(d.kind().unwrap(), Kind::Double);
+                    assert_eq!(d.kind(), Kind::Double);
 
                     e.iter().for_each(|tensor| {
                         assert_eq!(tensor.device(), maybe_cuda);
-                        assert_eq!(tensor.kind().unwrap(), Kind::Double);
+                        assert_eq!(tensor.kind(), Kind::Double);
                     });
                 }
                 _ => unreachable!(),
@@ -360,7 +360,7 @@ fn derive_clone_test() {
             .shallow_clone();
 
         assert_eq!(to.0.device(), maybe_cuda);
-        assert_eq!(to.0.kind().unwrap(), Kind::Double);
+        assert_eq!(to.0.kind(), Kind::Double);
         assert_eq!(to.1, "mighty");
         assert_eq!(to.2, "tch".to_string());
     }
@@ -387,7 +387,7 @@ fn derive_clone_test() {
             .shallow_clone();
 
         assert_eq!(to.a.device(), maybe_cuda);
-        assert_eq!(to.a.kind().unwrap(), Kind::Double);
+        assert_eq!(to.a.kind(), Kind::Double);
         assert_eq!(to.b, "mighty");
         assert_eq!(to.c, "tch".to_string());
     }
