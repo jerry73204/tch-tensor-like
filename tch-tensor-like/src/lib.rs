@@ -47,11 +47,13 @@ macro_rules! impl_for_primitive {
 impl_for_primitive!(bool);
 impl_for_primitive!(f32);
 impl_for_primitive!(f64);
+impl_for_primitive!(usize);
 impl_for_primitive!(u8);
 impl_for_primitive!(u16);
 impl_for_primitive!(u32);
 impl_for_primitive!(u64);
 impl_for_primitive!(u128);
+impl_for_primitive!(isize);
 impl_for_primitive!(i8);
 impl_for_primitive!(i16);
 impl_for_primitive!(i32);
