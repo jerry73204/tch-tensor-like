@@ -86,7 +86,7 @@ where
                         },
                         CloneKind::Copy => quote_spanned! {
                             field.span() =>
-                                #proxy_name
+                                *#proxy_name
                         },
                         CloneKind::None => transform(&proxy_name),
                     };
@@ -141,7 +141,7 @@ where
                         },
                         CloneKind::Copy => quote_spanned! {
                             field.span() =>
-                                #ident
+                                *#ident
                         },
                         CloneKind::None => transform(&ident),
                     };
@@ -208,7 +208,7 @@ where
                                         },
                                         CloneKind::Copy => quote_spanned! {
                                             field.span() =>
-                                                #proxy_name
+                                                *#proxy_name
                                         },
                                         CloneKind::None => transform(&proxy_name),
                                     };
@@ -253,7 +253,7 @@ where
                                         },
                                         CloneKind::Copy => quote_spanned! {
                                             field.span() =>
-                                                #proxy_name
+                                                *#proxy_name
                                         },
                                         CloneKind::None => transform(&proxy_name),
                                     };

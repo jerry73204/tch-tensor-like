@@ -351,9 +351,15 @@ fn derive_clone_test() {
             Tensor,
             #[tensor_like(copy)] &'static str,
             #[tensor_like(clone)] String,
+            #[tensor_like(copy)] Device,
         );
 
-        let from = Tuple(Tensor::randn(&[], FLOAT_CPU), "mighty", "tch".into());
+        let from = Tuple(
+            Tensor::randn(&[], FLOAT_CPU),
+            "mighty",
+            "tch".into(),
+            Device::Cpu,
+        );
         let to = from
             .to_device(maybe_cuda)
             .to_kind(Kind::Double)
@@ -363,6 +369,7 @@ fn derive_clone_test() {
         assert_eq!(to.0.kind(), Kind::Double);
         assert_eq!(to.1, "mighty");
         assert_eq!(to.2, "tch".to_string());
+        assert_eq!(to.3, Device::Cpu);
     }
 
     // named struct
@@ -374,12 +381,15 @@ fn derive_clone_test() {
             b: &'static str,
             #[tensor_like(clone)]
             c: String,
+            #[tensor_like(copy)]
+            d: Device,
         }
 
         let from = Named {
             a: Tensor::randn(&[], FLOAT_CPU),
             b: "mighty",
             c: "tch".into(),
+            d: Device::Cpu,
         };
         let to = from
             .to_device(maybe_cuda)
@@ -390,5 +400,6 @@ fn derive_clone_test() {
         assert_eq!(to.a.kind(), Kind::Double);
         assert_eq!(to.b, "mighty");
         assert_eq!(to.c, "tch".to_string());
+        assert_eq!(to.d, Device::Cpu);
     }
 }
