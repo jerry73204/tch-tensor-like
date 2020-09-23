@@ -7,7 +7,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tch = { git = "https://github.com/LaurentMazare/tch-rs.git" }
+tch = "0.2"
 tch-tensor-like-derive = { path = "../derive", version = "0.1", optional = true }
 
 [dev-dependencies]
