@@ -3,6 +3,7 @@ name = "tch-tensor-like"
 version = "0.2.0"
 authors = ["jerry73204 <jerry73204@gmail.com>"]
 edition = "2018"
+description = "Derive convenient methods for struct or enum of tch tensors"
 # categories = []
 documentation = "https://docs.rs/tch-tensor-like/"
 repository = "https://github.com/jerry73204/tch-tensor-like.git"
