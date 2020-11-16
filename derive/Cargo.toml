@@ -3,6 +3,11 @@ name = "tch-tensor-like-derive"
 version = "0.1.0"
 authors = ["jerry73204 <jerry73204@gmail.com>"]
 edition = "2018"
+# categories = []
+documentation = "https://docs.rs/tch-tensor-like-derive/"
+repository = "https://github.com/jerry73204/tch-tensor-like.git"
+homepage = "https://github.com/jerry73204/tch-tensor-like"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
