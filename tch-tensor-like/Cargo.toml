@@ -8,17 +8,17 @@ description = "Derive convenient methods for struct or enum of tch tensors"
 documentation = "https://docs.rs/tch-tensor-like/"
 repository = "https://github.com/jerry73204/tch-tensor-like.git"
 homepage = "https://github.com/jerry73204/tch-tensor-like"
-README = "../README.md"
+readme = "../README.md"
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tch = "0.3"
+tch = "0.4.0"
 tch-tensor-like-derive = { path = "../derive", version = "0.1", optional = true }
 
 [dev-dependencies]
-approx = "0.3"
+approx = "0.4.0"
 
 [features]
 derive = ["tch-tensor-like-derive"]
