@@ -22,3 +22,8 @@ approx = "0.4.0"
 
 [features]
 derive = ["tch-tensor-like-derive"]
+doc-only = ["tch/doc-only"]
+
+[package.metadata.docs.rs]
+features = ["doc-only"]
+no-default-features = true
