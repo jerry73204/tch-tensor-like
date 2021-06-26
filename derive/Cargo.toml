@@ -1,6 +1,6 @@
 [package]
 name = "tch-tensor-like-derive"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["jerry73204 <jerry73204@gmail.com>"]
 edition = "2018"
 description = "Derive macro implemenations used by tch-tensor-like crate"
