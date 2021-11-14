@@ -14,8 +14,8 @@ license = "MIT"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tch = "0.5.0"
-tch-tensor-like-derive = { path = "../derive", version = "0.1.2", optional = true }
+tch = "0.6.1"
+tch-tensor-like-derive = { path = "../derive", version = "0.1", optional = true }
 
 [dev-dependencies]
 approx = "0.5.0"
